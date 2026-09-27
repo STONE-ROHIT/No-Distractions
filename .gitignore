@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Packaging artifacts
+*.zip

@@ -1,0 +1,27 @@
+{
+  "name": "no-distractions",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Learn from YouTube. Without the distractions. A distraction-free, learning-focused platform built around YouTube educational content.",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n CLIENT,SERVER -c blue,green \"npm run dev -w client\" \"npm run dev -w server\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build -w client && npm run build -w server",
+    "lint": "npm run lint -w client && npm run lint -w server",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run test -w client && npm run test -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "prettier": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
