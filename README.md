@@ -6,8 +6,9 @@ A learning-focused player and personal library built around YouTube's
 educational content — the video, your notes, your progress, and nothing
 else. No recommendations, no Shorts, no comments, no autoplay queue.
 
-> **Status: Phase 1 — Foundation complete.** This is a scaffold, not yet a
-> product — see [Roadmap](#roadmap) below.
+> **Status: Phase 2 — Authentication complete.** Registration, login,
+> persistent sessions, and protected routes work end to end; there's no
+> real product to use yet — see [Roadmap](#roadmap) below.
 
 ## What this is
 
@@ -57,7 +58,8 @@ Full walkthrough with troubleshooting: [`docs/00-getting-started`](./docs/00-get
 git clone <your-fork-or-repo-url> no-distractions
 cd no-distractions
 npm install
-cp server/.env.example server/.env   # then set MONGODB_URI
+cp server/.env.example server/.env   # then set MONGODB_URI and JWT_ACCESS_SECRET
+cp client/.env.example client/.env
 npm run dev
 ```
 
@@ -83,10 +85,10 @@ Run from the repo root; each fans out to both `client` and `server`.
 
 ## Environment variables
 
-Only `server/.env` exists so far — see [`server/.env.example`](./server/.env.example).
-The client introduces its first environment variable when it starts
-calling the API in a later phase. **No real secret is ever committed** —
-`.env` is gitignored; `.env.example` documents the shape.
+See [`server/.env.example`](./server/.env.example) and
+[`client/.env.example`](./client/.env.example). **No real secret is ever
+committed** — both `.env` files are gitignored; the `.example` files
+document the shape.
 
 | Variable | Used by | Meaning |
 |---|---|---|
@@ -94,15 +96,19 @@ calling the API in a later phase. **No real secret is ever committed** —
 | `PORT` | server | Port Express listens on |
 | `MONGODB_URI` | server | MongoDB connection string |
 | `CLIENT_URL` | server | Frontend origin, for CORS + cookie settings |
+| `JWT_ACCESS_SECRET` | server | Signs/verifies access tokens — generate with `openssl rand -hex 32` |
+| `VITE_API_URL` | client | Base URL of the Express API (including `/api`) |
 
 ## Testing
 
-`npm test` runs Vitest for both packages. Phase 1 has one meaningful
-backend test (`server/tests/health.test.ts`, via Supertest against the
-Express app directly — no live database required) and one frontend smoke
-test (`client/src/App.test.tsx`). Real feature tests (auth, progress,
-playlists, ...) are added in the same phase as the feature itself — see
-`docs/18-testing` (written once that phase lands).
+`npm test` runs Vitest for both packages. Backend auth tests
+(`server/tests/auth.test.ts`) mock the repository layer (no real MongoDB
+is available in this project's build environment) and drive real HTTP
+requests through the real routes/controllers/services with Supertest —
+see [`docs/10-authentication`](./docs/10-authentication/#testing) for
+what that does and doesn't cover. Real feature tests are added in the
+same phase as the feature itself; a dedicated testing guide lands at
+`docs/18-testing` in Phase 12.
 
 ## Documentation
 
@@ -123,7 +129,7 @@ technical limitations that follow from playing by these rules, lands in
 ## Roadmap
 
 - [x] **Phase 1 — Foundation** — monorepo, tooling, Express skeleton, docs system
-- [ ] Phase 2 — Authentication
+- [x] **Phase 2 — Authentication** — register/login/refresh/logout, protected routes, persistent sessions
 - [ ] Phase 3 — Application Shell
 - [ ] Phase 4 — YouTube Integration
 - [ ] Phase 5 — Learning Player

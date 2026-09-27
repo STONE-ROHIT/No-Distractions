@@ -1,8 +1,10 @@
 # ADR-002: Authentication strategy
 
-*(Decision recorded now, during Phase 1 architecture planning;
-implemented in Phase 2. See `docs/10-authentication/` for the full
-beginner-to-advanced guide once that phase lands.)*
+*(Decision recorded during Phase 1 architecture planning and implemented
+in Phase 2. One refinement was made during implementation: the refresh
+token is an opaque random string, not a JWT — see the Decision section.
+The full beginner-to-advanced guide is in
+[`docs/10-authentication`](../../10-authentication/).)*
 
 ## Context
 
@@ -17,15 +19,18 @@ if stolen) rather than remaining valid until it expires.
 
 ## Decision
 
-Use JWTs as the token format, delivered exclusively via `httpOnly`,
-`Secure`, `SameSite=Lax` cookies — never `localStorage` or a JS-readable
-cookie.
+Use a **JWT for the short-lived access token** and an **opaque random
+string (not a JWT) for the refresh token**, both delivered exclusively via
+`httpOnly`, `Secure`, `SameSite=Lax` cookies — never `localStorage` or a
+JS-readable cookie.
 
 - **Access token**: short-lived (~15 min), verified by an Express
   middleware on protected routes, never persisted server-side.
-- **Refresh token**: longer-lived (~30 days), *and* recorded server-side
-  in a dedicated `RefreshToken` collection as a hash (never the raw
-  token) with an expiry and a revoked flag.
+- **Refresh token**: 40 random bytes, hex-encoded — deliberately *not* a
+  JWT, because it is checked against the database on every use anyway, so
+  a self-verifying token would add nothing. Longer-lived (~30 days), and
+  recorded server-side in a dedicated `RefreshToken` collection as a
+  SHA-256 hash (never the raw token) with an expiry and a revoked flag.
 - **Rotation**: every call to `POST /api/auth/refresh` verifies the
   incoming refresh cookie against its stored hash, issues a brand-new
   access+refresh pair, and marks the old `RefreshToken` record revoked.
@@ -47,10 +52,9 @@ cookie.
   and would satisfy "secure cookie based authentication" on its own.
   Rejected in favor of JWT + cookie because the brief's own phrasing
   ("JWT ... OR ... cookie based") signals a preference for JWT semantics
-  (stateless access-token verification, no DB read on every request), and
-  because Rohit's existing [[creator-dashboard]]-style projects already
-  use JWT — this keeps the pattern consistent rather than introducing a
-  second, unrelated auth model to learn.
+  (stateless access-token verification, no DB read on every request),
+  and because the JWT-plus-refresh-token pattern is the one most commonly
+  expected in the MERN ecosystem this project is meant to demonstrate.
 - **A single `tokenVersion` counter on `User`** (increment to invalidate
   all refresh tokens at once) instead of a `RefreshToken` collection —
   simpler, but only supports "log out everywhere", not "log out this one

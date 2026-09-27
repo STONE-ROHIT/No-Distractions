@@ -16,6 +16,15 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(5000),
   MONGODB_URI: z.string().min(1, 'MONGODB_URI is required'),
   CLIENT_URL: z.string().url('CLIENT_URL must be a valid URL, e.g. http://localhost:5173'),
+  // Signs/verifies access tokens only. Refresh tokens are opaque random
+  // strings (hashed at rest in the RefreshToken collection), not JWTs, so
+  // they need no secret of their own — see docs/10-authentication.
+  JWT_ACCESS_SECRET: z
+    .string()
+    .min(
+      32,
+      'JWT_ACCESS_SECRET must be at least 32 characters — generate one with `openssl rand -hex 32`',
+    ),
 });
 
 function loadEnv() {
