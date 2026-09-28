@@ -52,6 +52,12 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/no-distraction
 JWT_ACCESS_SECRET=<output of `openssl rand -hex 32`>
 ```
 
+`JWT_ACCESS_SECRET` ships **empty** in the example on purpose: the server
+validates its environment at startup and refuses to boot until you've set
+a real one, printing exactly what's missing, e.g. `JWT_ACCESS_SECRET must
+be at least 32 characters — generate one with openssl rand -hex 32`. That
+fail-fast behavior is deliberate — see `server/src/config/env.ts`.
+
 Leave `PORT`, `NODE_ENV`, `CLIENT_URL`, and `client/.env`'s `VITE_API_URL`
 at their example defaults unless you have a reason to change them. See
 `server/.env.example` / `client/.env.example` for what each variable

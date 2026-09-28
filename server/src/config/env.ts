@@ -1,4 +1,12 @@
+import dotenv from 'dotenv';
 import { z } from 'zod';
+
+// Load server/.env (if there is one) BEFORE validating. Real environment
+// variables always win — dotenv never overrides a variable that's already
+// set — so platforms that inject variables directly (and the test runner's
+// injected values) are unaffected by a stray file. `quiet` silences
+// dotenv's startup banner.
+dotenv.config({ quiet: true });
 
 /**
  * All environment variables the server actually reads, validated eagerly
