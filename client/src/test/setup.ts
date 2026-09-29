@@ -17,3 +17,25 @@ import { afterEach } from 'vitest';
 afterEach(() => {
   cleanup();
 });
+
+// jsdom doesn't implement matchMedia at all. Anything using ThemeProvider
+// (which calls useMediaQuery for prefers-color-scheme) needs this to
+// exist; defaults to "does not match" (light), same as production when a
+// browser genuinely has no preference set. addEventListener/
+// removeEventListener are real no-op-compatible functions — useMediaQuery
+// calls them — rather than `vi.fn()` stand-ins, so a test that DOES want
+// to simulate a change can still swap this per-test without touching this
+// file.
+if (typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query: string): MediaQueryList =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
+}

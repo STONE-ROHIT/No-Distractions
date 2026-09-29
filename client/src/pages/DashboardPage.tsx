@@ -1,26 +1,26 @@
 import { useAuth } from '../context/useAuth';
-import { Button } from '../components/Button';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { ContinueLearningSection } from './dashboard/ContinueLearningSection';
+import { MyLibrarySection } from './dashboard/MyLibrarySection';
+import { ProgressSection } from './dashboard/ProgressSection';
+import { RecentlyAddedSection } from './dashboard/RecentlyAddedSection';
 
-/**
- * Temporary placeholder proving the full auth loop works end to end
- * (register/login → protected route → persistent session → logout). The
- * real learning dashboard (Continue Learning, My Library, Progress) is
- * built in Phase 7/8 — see the root README's roadmap.
- */
 export function DashboardPage() {
-  const { user, logout } = useAuth();
+  useDocumentTitle('Dashboard');
+  const { user } = useAuth();
+  const firstName = user?.name.split(' ')[0];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-neutral-950 px-6 text-center text-neutral-100">
-      <p className="text-sm font-medium tracking-wide text-neutral-500">No Distractions</p>
-      <h1 className="text-2xl font-semibold">Welcome, {user?.name}.</h1>
-      <p className="max-w-md text-sm text-neutral-400">
-        This is a placeholder — the real dashboard (continue learning, library, progress) is built
-        in a later phase.
-      </p>
-      <Button variant="secondary" onClick={() => void logout()}>
-        Log out
-      </Button>
-    </main>
+    <div className="flex flex-col gap-6">
+      <h1 className="font-serif text-2xl text-ink">
+        {firstName ? `Welcome back, ${firstName}.` : 'Dashboard'}
+      </h1>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <ContinueLearningSection />
+        <MyLibrarySection />
+        <RecentlyAddedSection />
+        <ProgressSection />
+      </div>
+    </div>
   );
 }

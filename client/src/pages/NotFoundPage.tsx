@@ -1,12 +1,19 @@
 import { Link } from 'react-router-dom';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { PublicHeader } from '../layouts/PublicHeader';
 
 export function NotFoundPage() {
+  useDocumentTitle('Page not found');
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-3 bg-neutral-950 px-6 text-center text-neutral-100">
-      <h1 className="text-2xl font-semibold">Page not found</h1>
-      <Link to="/" className="text-sm text-neutral-400 underline underline-offset-2">
-        Back to No Distractions
-      </Link>
-    </main>
+    <div className="flex min-h-screen flex-col bg-canvas">
+      <PublicHeader />
+      <main className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
+        <h1 className="font-serif text-2xl text-ink">Page not found</h1>
+        <Link to="/" className="text-sm text-ink-muted underline underline-offset-2 hover:text-ink">
+          Back to No Distractions
+        </Link>
+      </main>
+    </div>
   );
 }

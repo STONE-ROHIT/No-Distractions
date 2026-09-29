@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import type { User } from './types/user';
 
 vi.mock('./api/auth');
@@ -25,9 +26,11 @@ function renderApp(initialRoute: string) {
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={[initialRoute]}>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ThemeProvider>
       </MemoryRouter>
     </QueryClientProvider>,
   );
@@ -37,25 +40,13 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe('routing', () => {
+describe('public routing', () => {
   it('shows the home page at /', async () => {
     vi.mocked(fetchCurrentUser).mockRejectedValue(new Error('not logged in'));
     renderApp('/');
-    expect(await screen.findByText('No Distractions')).toBeInTheDocument();
-  });
-
-  it('redirects an unauthenticated visitor from /dashboard to /login', async () => {
-    vi.mocked(fetchCurrentUser).mockRejectedValue(new Error('not logged in'));
-    renderApp('/dashboard');
-    expect(await screen.findByRole('heading', { name: /log in/i })).toBeInTheDocument();
-  });
-
-  it('renders the dashboard for an authenticated visitor', async () => {
-    vi.mocked(fetchCurrentUser).mockResolvedValue(fakeUser);
-    renderApp('/dashboard');
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /welcome, ada\./i })).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByRole('heading', { name: /learn from youtube\./i }),
+    ).toBeInTheDocument();
   });
 
   it('shows a not-found page for an unknown route', async () => {
@@ -63,11 +54,34 @@ describe('routing', () => {
     renderApp('/this-route-does-not-exist');
     expect(await screen.findByRole('heading', { name: /page not found/i })).toBeInTheDocument();
   });
+});
+
+describe.each([
+  ['/dashboard', /welcome back, ada\./i],
+  ['/library', /^library$/i],
+  ['/stats', /^statistics$/i],
+])('the protected route %s', (path, headingPattern) => {
+  it('redirects an unauthenticated visitor to /login', async () => {
+    vi.mocked(fetchCurrentUser).mockRejectedValue(new Error('not logged in'));
+    renderApp(path);
+    expect(await screen.findByRole('heading', { name: /log in/i })).toBeInTheDocument();
+  });
+
+  it('renders inside the app shell for an authenticated visitor', async () => {
+    vi.mocked(fetchCurrentUser).mockResolvedValue(fakeUser);
+    renderApp(path);
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: headingPattern })).toBeInTheDocument();
+    });
+    // The shell itself: sidebar nav is present, and it's this user's page.
+    expect(screen.getByRole('link', { name: 'Dashboard' })).toBeInTheDocument();
+    expect(screen.getByText('Ada')).toBeInTheDocument();
+  });
 
   it('shows a loading status, not a blank screen, while the session check is pending', () => {
     // A promise that never settles keeps the session check "in flight".
     vi.mocked(fetchCurrentUser).mockReturnValue(new Promise(() => {}));
-    renderApp('/dashboard');
+    renderApp(path);
     expect(screen.getByRole('status')).toHaveTextContent(/checking your session/i);
   });
 });

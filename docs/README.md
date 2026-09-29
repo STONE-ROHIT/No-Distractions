@@ -42,8 +42,8 @@ you're touching.
 | 02 | Web Fundamentals | planned — opportunistically |
 | 03 | JavaScript | planned — opportunistically |
 | 04 | TypeScript | planned — opportunistically |
-| 05 | React | planned — Phase 3 |
-| 06 | Frontend Architecture | planned — Phase 3 |
+| 05 | [React](./05-react/) | ✅ written |
+| 06 | [Frontend Architecture](./06-frontend-architecture/) | ✅ written |
 | 07 | Node & Express | 🟡 covered inline in `08` for now |
 | 08 | [Backend Architecture](./08-backend-architecture/) | ✅ written |
 | 09 | [MongoDB](./09-mongodb/) | 🟡 started — `User`, `RefreshToken` done, 6 collections to go |
@@ -52,13 +52,13 @@ you're touching.
 | 12 | Video Player | planned — Phase 5 |
 | 13 | Learning Features (progress, notes, bookmarks, playlists, focus mode) | planned — Phases 5–10 |
 | 14 | [API Reference](./14-api/) | 🟡 started — auth + users done, 8 resources to go |
-| 15 | State Management | planned — Phase 3 |
+| 15 | [State Management](./15-state-management/) | ✅ written |
 | 16 | Caching & Offline | planned — Phase 11 |
 | 17 | Security | planned — grows every phase; finalized Phase 13 |
 | 18 | Testing | planned — grows every phase; finalized Phase 12 |
 | 19 | Performance | planned — Phase 13 |
 | 20 | Deployment | planned — Phase 13/14 |
-| 21 | Git & Development Workflow | planned — Phase 2 |
+| 21 | Git & Development Workflow | planned — opportunistically |
 | 22 | [Architecture](./22-architecture/) (incl. [ADRs](./22-architecture/decisions/)) | 🟡 started |
 | 23 | Troubleshooting | planned — grows as real issues come up |
 | 24 | Advanced / Codebase Challenges | planned — Phase 14 |
@@ -90,3 +90,7 @@ rather than spun out into `04` prematurely). `07` (Node & Express) is
 folded into `08` for the same reason: a standalone "what is Express"
 chapter had nothing to teach that `08`'s worked example doesn't already
 cover better, in context.
+
+Same reasoning applied to `21` (Git & Development Workflow) in Phase 3:
+it doesn't belong to any one feature phase either, so it moved from a
+fixed "Phase 2" slot to "opportunistic," same as `02`–`04`.

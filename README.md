@@ -6,9 +6,10 @@ A learning-focused player and personal library built around YouTube's
 educational content — the video, your notes, your progress, and nothing
 else. No recommendations, no Shorts, no comments, no autoplay queue.
 
-> **Status: Phase 2 — Authentication complete.** Registration, login,
-> persistent sessions, and protected routes work end to end; there's no
-> real product to use yet — see [Roadmap](#roadmap) below.
+> **Status: Phase 3 — Application Shell complete.** Real landing page,
+> authenticated app shell (sidebar/topbar, responsive), and a light/dark
+> theme system are in; there's still no learning feature to use yet — see
+> [Roadmap](#roadmap) below.
 
 ## What this is
 
@@ -21,6 +22,13 @@ everything around it with a distraction-free learning environment:
 timestamped notes and bookmarks, resumable progress, playlists organized
 as courses, and a focus mode.
 
+## Screenshots
+
+|  |  |
+|---|---|
+| ![Landing page, light theme](./docs/assets/screenshots/landing-light.png) | ![Landing page, dark theme](./docs/assets/screenshots/landing-dark.png) |
+| ![Dashboard, light theme](./docs/assets/screenshots/dashboard-light.png) | *(dashboard sections are empty states until Phases 4–9 add real data)* |
+
 ## Tech stack
 
 | Layer | Choice |
@@ -29,6 +37,7 @@ as courses, and a focus mode.
 | Backend | Node.js + Express 5 + TypeScript |
 | Database | MongoDB + Mongoose |
 | Auth | JWT in `httpOnly` cookies, with server-side refresh-token rotation ([ADR-002](./docs/22-architecture/decisions/ADR-002-authentication-strategy.md)) |
+| Design | Custom design tokens (light/dark), Literata + Instrument Sans (variable fonts), lucide-react icons — [ADR-008](./docs/22-architecture/decisions/ADR-008-design-system.md) |
 | Validation | Zod |
 | Logging | Pino (structured JSON; pretty-printed in development) |
 | Testing | Vitest (+ Supertest on the backend, React Testing Library on the frontend) |
@@ -130,7 +139,7 @@ technical limitations that follow from playing by these rules, lands in
 
 - [x] **Phase 1 — Foundation** — monorepo, tooling, Express skeleton, docs system
 - [x] **Phase 2 — Authentication** — register/login/refresh/logout, protected routes, persistent sessions
-- [ ] Phase 3 — Application Shell
+- [x] **Phase 3 — Application Shell** — real landing page, sidebar/topbar app shell, responsive drawer, light/dark theme system
 - [ ] Phase 4 — YouTube Integration
 - [ ] Phase 5 — Learning Player
 - [ ] Phase 6 — Notes & Bookmarks

@@ -10,5 +10,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    env: {
+      // Not currently hit by any test (everything mocks api/auth), but
+      // keeps a future test that exercises the real api/client.ts from
+      // failing on its fail-fast VITE_API_URL check.
+      VITE_API_URL: 'http://localhost:5000/api',
+    },
   },
 });

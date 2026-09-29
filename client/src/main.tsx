@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import { AuthProvider } from './context/AuthContext.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 import './index.css';
 
 const queryClient = new QueryClient();
@@ -17,9 +18,11 @@ createRoot(rootElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>,

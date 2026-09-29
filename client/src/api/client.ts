@@ -1,5 +1,18 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
+// Fails loudly, immediately, at startup if this is missing — the
+// alternative is silent: axios treats an undefined baseURL as "no base
+// URL", so every request quietly goes to a same-origin relative path
+// (e.g. https://your-app.com/users/me instead of .../api/users/me)
+// instead of the API, which looks like a confusing 404/HTML-response bug
+// far from its actual cause. Mirrors server/src/config/env.ts's
+// fail-fast validation.
+if (!import.meta.env.VITE_API_URL) {
+  throw new Error(
+    'VITE_API_URL is not set. Copy client/.env.example to client/.env (see docs/00-getting-started).',
+  );
+}
+
 /**
  * The one Axios instance every api/*.ts wrapper uses.
  *
