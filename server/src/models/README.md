@@ -10,3 +10,9 @@ validation, and indexes; queried only through the matching repository in
 - `RefreshToken.ts` — one document per active session, hashed at rest,
   with a TTL index that auto-deletes expired sessions. See
   [ADR-002](../../../docs/22-architecture/decisions/ADR-002-authentication-strategy.md).
+- `Video.ts` — global metadata cache keyed by `youtubeVideoId` (unique),
+  fetched from the YouTube Data API once and reused for every user who
+  imports the same video. `embeddable` is checked before rendering the
+  player, not discovered by a broken embed.
+- `LibraryItem.ts` — "this video is in this user's library"; unique on
+  `(user, video)`. See [ADR-003](../../../docs/22-architecture/decisions/ADR-003-database-schema-design.md).

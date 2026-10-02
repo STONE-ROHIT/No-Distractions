@@ -46,12 +46,12 @@ you're touching.
 | 06 | [Frontend Architecture](./06-frontend-architecture/) | ✅ written |
 | 07 | Node & Express | 🟡 covered inline in `08` for now |
 | 08 | [Backend Architecture](./08-backend-architecture/) | ✅ written |
-| 09 | [MongoDB](./09-mongodb/) | 🟡 started — `User`, `RefreshToken` done, 6 collections to go |
+| 09 | [MongoDB](./09-mongodb/) | 🟡 started — `User`, `RefreshToken`, `Video`, `LibraryItem` done, 4 collections to go |
 | 10 | [Authentication](./10-authentication/) | ✅ written |
-| 11 | YouTube Integration | planned — Phase 4 |
+| 11 | [YouTube Integration](./11-youtube-integration/) | ✅ written |
 | 12 | Video Player | planned — Phase 5 |
 | 13 | Learning Features (progress, notes, bookmarks, playlists, focus mode) | planned — Phases 5–10 |
-| 14 | [API Reference](./14-api/) | 🟡 started — auth + users done, 8 resources to go |
+| 14 | [API Reference](./14-api/) | 🟡 started — auth, users, videos, library done, 6 resources to go |
 | 15 | [State Management](./15-state-management/) | ✅ written |
 | 16 | Caching & Offline | planned — Phase 11 |
 | 17 | Security | planned — grows every phase; finalized Phase 13 |

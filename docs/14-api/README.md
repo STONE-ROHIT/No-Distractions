@@ -92,9 +92,66 @@ Returned by every endpoint above — notice what's absent:
 No `passwordHash`, ever — see [08-backend-architecture](../08-backend-architecture/)
 on why that's structurally true rather than just "remembered to strip it".
 
+## Video endpoints
+
+### `POST /api/videos/import`
+
+Parses a YouTube video or playlist URL, fetches its metadata, stores it,
+and adds it to the caller's library. See
+[11-youtube-integration](../11-youtube-integration/) for the full flow.
+
+| | |
+|---|---|
+| Auth required | Yes |
+| Body | `{ url: string }` |
+| 201 (video) | `{ type: 'video', video: Video }` |
+| 201 (playlist) | `{ type: 'playlist', playlistTitle: string, videos: Video[] }` |
+| 400 | Not a recognizable YouTube URL, or a Shorts link |
+| 404 | The video/playlist is unavailable, private, or (playlist) empty |
+| 503 | YouTube's API quota is exhausted |
+| 502 | YouTube's API couldn't be reached |
+
+### `GET /api/videos/:id`
+
+| | |
+|---|---|
+| Auth required | Yes |
+| 200 | `{ video: Video }` |
+| 404 | No video with that id |
+
+### `Video` shape
+
+```ts
+{
+  id: string;
+  youtubeVideoId: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  channelTitle: string;
+  durationSeconds: number;
+  embeddable: boolean;
+  publishedAt: string; // ISO 8601
+}
+```
+
+## Library endpoints
+
+### `GET /api/library`
+
+The caller's saved videos, newest first.
+
+| | |
+|---|---|
+| Auth required | Yes |
+| 200 | `{ items: Array<{ savedAt: string; video: Video }> }` |
+
+No filtering/sorting/search yet — Phase 8 adds query parameters here
+without changing the response shape.
+
 ## Still to come
 
-`/api/videos`, `/api/library`, `/api/playlists`, `/api/progress`,
-`/api/notes`, `/api/bookmarks`, `/api/search`, `/api/stats` are designed
-(see the root README's Phase 1 delivery message for the target shape) but
-not yet implemented — documented here once each phase lands.
+`/api/playlists`, `/api/progress`, `/api/notes`, `/api/bookmarks`,
+`/api/search`, `/api/stats` are designed (see
+[ADR-003](../22-architecture/decisions/ADR-003-database-schema-design.md))
+but not yet implemented — documented here once each phase lands.

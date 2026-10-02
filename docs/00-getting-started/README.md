@@ -50,13 +50,19 @@ MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/no-distraction
 # Generate a real one — this signs your access tokens, so it needs to
 # actually be secret and at least 32 characters:
 JWT_ACCESS_SECRET=<output of `openssl rand -hex 32`>
+
+# Free from https://console.cloud.google.com/apis/credentials after
+# enabling "YouTube Data API v3" — see docs/11-youtube-integration for
+# the full walkthrough.
+YOUTUBE_API_KEY=<your key>
 ```
 
-`JWT_ACCESS_SECRET` ships **empty** in the example on purpose: the server
-validates its environment at startup and refuses to boot until you've set
-a real one, printing exactly what's missing, e.g. `JWT_ACCESS_SECRET must
-be at least 32 characters — generate one with openssl rand -hex 32`. That
-fail-fast behavior is deliberate — see `server/src/config/env.ts`.
+`JWT_ACCESS_SECRET` and `YOUTUBE_API_KEY` both ship **empty** in the
+example on purpose: the server validates its environment at startup and
+refuses to boot until you've set real values, printing exactly what's
+missing, e.g. `JWT_ACCESS_SECRET must be at least 32 characters —
+generate one with openssl rand -hex 32`. That fail-fast behavior is
+deliberate — see `server/src/config/env.ts`.
 
 Leave `PORT`, `NODE_ENV`, `CLIENT_URL`, and `client/.env`'s `VITE_API_URL`
 at their example defaults unless you have a reason to change them. See
@@ -116,7 +122,17 @@ curl -i -b cookies.txt http://localhost:5000/api/users/me
 # 200 {"user": {...}}
 ```
 
-## 5. Verify the toolchain
+## 5. Try importing a video
+
+From the dashboard (after logging in), paste a YouTube video or playlist
+URL — e.g. `https://www.youtube.com/watch?v=dQw4w9WgXcQ` — into the
+import field at the top. A single video takes you straight to its watch
+page; a playlist takes you to your library, now showing every video in
+it. Both require a real `YOUTUBE_API_KEY` (step 2) — without one, the
+server refuses to start at all, so you'll know immediately rather than
+getting a confusing failure on import.
+
+## 6. Verify the toolchain
 
 ```bash
 npm run lint    # ESLint across both packages

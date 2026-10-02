@@ -82,12 +82,68 @@ User.findOne({ email }).select('+passwordHash');
 new Schema({ expiresAt: { type: Date, index: { expires: 0 } } });
 ```
 
+### Video
+
+```ts
+{
+  youtubeVideoId: string, // unique, indexed — the global cache key
+  title: string,
+  description: string,
+  thumbnailUrl: string,
+  channelTitle: string,
+  channelId: string,
+  durationSeconds: number,  // parsed from the API's ISO 8601 duration
+  embeddable: boolean,      // from the API's status.embeddable
+  publishedAt: Date,
+  lastMetadataRefresh: Date,
+  createdAt: Date,          // standard Mongoose timestamp — see the note below
+}
+```
+
+One global document per YouTube video, however many users import it —
+fetched from the YouTube Data API once and reused. See
+`server/src/repositories/video.repository.ts`'s `upsertVideoFromApi`,
+which also *refreshes* the stored metadata if the video is imported
+again (a title or thumbnail can change after the fact).
+
+A worked example of a real Mongoose gotcha: `Video` originally used a
+custom-named timestamp field (`{ timestamps: { createdAt: 'importedAt' }
+}`) for a more descriptive name. That broke Mongoose's generated
+TypeScript document type for the *entire* schema — not just that one
+field, but every field, even `_id`, started type-checking as `unknown` at
+every call site. Switched to plain `{ timestamps: true }` (so the field
+is `createdAt`, not `importedAt`) rather than fight the type system for a
+field-name preference — see `models/Video.ts`'s comment and
+[ADR-005](../22-architecture/decisions/ADR-005-youtube-embedding.md).
+
+### LibraryItem
+
+```ts
+{
+  user: ObjectId,   // ref: 'User', indexed
+  video: ObjectId,  // ref: 'Video'
+  savedAt: Date,
+}
+```
+
+Unique on `(user, video)`. "This video is in this user's library" —
+created automatically when a video is imported (see
+`docs/11-youtube-integration`'s import flow and
+[ADR-005](../22-architecture/decisions/ADR-005-youtube-embedding.md) for
+why saving isn't a separate action from importing, for now). Populated
+via Mongoose's `.populate('video')` in
+`repositories/libraryItem.repository.ts`'s `findLibraryByUser` — a
+worked example of populate in this codebase, including the TypeScript
+wrinkle it introduces (a populated field's static type doesn't
+automatically change from `ObjectId` to the full document; see that
+file's repository and `services/library.service.ts`'s cast).
+
 ## Still to come
 
-Field-level schemas for `Video`, `LibraryItem`, `Playlist`,
-`WatchProgress`, `Note`, and `Bookmark` are documented here once their
-phase implements them (4, 4/8, 7, 5, 6, 6 respectively) — the full target
-shape for all eight is already in
+Field-level schemas for `Playlist`, `WatchProgress`, `Note`, and
+`Bookmark` are documented here once their phase implements them (7, 5, 6,
+6 respectively) — the full target shape for all eight collections is
+already in
 [ADR-003](../22-architecture/decisions/ADR-003-database-schema-design.md),
 but this page only documents models that actually exist in the code right
 now.

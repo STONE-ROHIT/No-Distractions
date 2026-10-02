@@ -14,6 +14,7 @@ export default defineConfig({
       MONGODB_URI: 'mongodb://localhost:27017/no-distractions-test',
       CLIENT_URL: 'http://localhost:5173',
       JWT_ACCESS_SECRET: 'test-only-secret-do-not-use-in-real-environments-0123456789',
+      YOUTUBE_API_KEY: 'test-only-key-youtube-fetches-are-mocked-in-every-test',
     },
   },
 });

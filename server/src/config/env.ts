@@ -33,6 +33,9 @@ const envSchema = z.object({
       32,
       'JWT_ACCESS_SECRET must be at least 32 characters — generate one with `openssl rand -hex 32`',
     ),
+  // YouTube Data API v3 key (metadata only — see docs/11-youtube-integration
+  // for exactly what this is and isn't used for).
+  YOUTUBE_API_KEY: z.string().min(1, 'YOUTUBE_API_KEY is required'),
 });
 
 function loadEnv() {

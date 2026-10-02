@@ -8,6 +8,7 @@ import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { StatsPage } from './pages/StatsPage';
+import { VideoPage } from './pages/VideoPage';
 
 // Route definitions only — providers (QueryClient, Router, Auth, Theme)
 // are composed in main.tsx, which is what keeps this file easy to render
@@ -31,6 +32,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/library" element={<LibraryPage />} />
         <Route path="/stats" element={<StatsPage />} />
+        <Route path="/videos/:videoId" element={<VideoPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

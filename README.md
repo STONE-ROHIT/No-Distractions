@@ -6,10 +6,10 @@ A learning-focused player and personal library built around YouTube's
 educational content — the video, your notes, your progress, and nothing
 else. No recommendations, no Shorts, no comments, no autoplay queue.
 
-> **Status: Phase 3 — Application Shell complete.** Real landing page,
-> authenticated app shell (sidebar/topbar, responsive), and a light/dark
-> theme system are in; there's still no learning feature to use yet — see
-> [Roadmap](#roadmap) below.
+> **Status: Phase 4 — YouTube Integration complete.** You can paste a
+> YouTube video or playlist URL, see it imported with real metadata, and
+> watch it through YouTube's own embedded player. No notes, progress
+> tracking, or focus mode yet — see [Roadmap](#roadmap) below.
 
 ## What this is
 
@@ -67,7 +67,7 @@ Full walkthrough with troubleshooting: [`docs/00-getting-started`](./docs/00-get
 git clone <your-fork-or-repo-url> no-distractions
 cd no-distractions
 npm install
-cp server/.env.example server/.env   # then set MONGODB_URI and JWT_ACCESS_SECRET
+cp server/.env.example server/.env   # then set MONGODB_URI, JWT_ACCESS_SECRET, YOUTUBE_API_KEY
 cp client/.env.example client/.env
 npm run dev
 ```
@@ -106,6 +106,7 @@ document the shape.
 | `MONGODB_URI` | server | MongoDB connection string |
 | `CLIENT_URL` | server | Frontend origin, for CORS + cookie settings |
 | `JWT_ACCESS_SECRET` | server | Signs/verifies access tokens — generate with `openssl rand -hex 32` |
+| `YOUTUBE_API_KEY` | server | YouTube Data API v3 key (metadata only) — see [`docs/11-youtube-integration`](./docs/11-youtube-integration/) for how to get one free |
 | `VITE_API_URL` | client | Base URL of the Express API (including `/api`) |
 
 ## Testing
@@ -140,7 +141,7 @@ technical limitations that follow from playing by these rules, lands in
 - [x] **Phase 1 — Foundation** — monorepo, tooling, Express skeleton, docs system
 - [x] **Phase 2 — Authentication** — register/login/refresh/logout, protected routes, persistent sessions
 - [x] **Phase 3 — Application Shell** — real landing page, sidebar/topbar app shell, responsive drawer, light/dark theme system
-- [ ] Phase 4 — YouTube Integration
+- [x] **Phase 4 — YouTube Integration** — URL import (video + playlist), real metadata via the Data API, embedded playback, a real library
 - [ ] Phase 5 — Learning Player
 - [ ] Phase 6 — Notes & Bookmarks
 - [ ] Phase 7 — Playlists

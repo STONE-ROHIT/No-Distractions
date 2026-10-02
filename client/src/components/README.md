@@ -13,6 +13,11 @@ than one page or feature.
 - `ThemeToggle.tsx` — light/system/dark, ARIA `radiogroup`.
 - `ProtectedRoute.tsx` — route guard (uses the auth context, not a
   feature's data, so it lives here rather than under `features/auth/`).
+- `VideoCard.tsx` — a video's thumbnail/title/channel/duration, linking
+  to its watch page. Takes a `Video` object as a prop and fetches
+  nothing itself, which is what makes it a `components/` citizen rather
+  than a `features/videos/` one — used by both the dashboard and the
+  library page.
 
 **Belongs here:** components with no knowledge of a specific feature's data
 or API calls. **Does not belong here:** anything that fetches data or has
