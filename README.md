@@ -6,10 +6,10 @@ A learning-focused player and personal library built around YouTube's
 educational content — the video, your notes, your progress, and nothing
 else. No recommendations, no Shorts, no comments, no autoplay queue.
 
-> **Status: Phase 4 — YouTube Integration complete.** You can paste a
-> YouTube video or playlist URL, see it imported with real metadata, and
-> watch it through YouTube's own embedded player. No notes, progress
-> tracking, or focus mode yet — see [Roadmap](#roadmap) below.
+> **Status: Phase 5 — Learning Player complete.** Watching a video now
+> tracks and resumes your progress, marks itself complete, and responds
+> to keyboard shortcuts. No notes, bookmarks, playlists, or focus mode
+> yet — see [Roadmap](#roadmap) below.
 
 ## What this is
 
@@ -133,8 +133,9 @@ No Distractions only uses officially supported YouTube mechanisms: the
 YouTube Data API v3 for metadata, and the YouTube IFrame Player API for
 playback. It does not scrape, download, proxy, or re-host video streams,
 and does not bypass ads or DRM. Full explanation, including the concrete
-technical limitations that follow from playing by these rules, lands in
-`docs/11-youtube-integration` (Phase 4).
+technical limitations that follow from playing by these rules, is in
+[`docs/11-youtube-integration`](./docs/11-youtube-integration/); how the
+player itself is built is in [`docs/12-video-player`](./docs/12-video-player/).
 
 ## Roadmap
 
@@ -142,7 +143,7 @@ technical limitations that follow from playing by these rules, lands in
 - [x] **Phase 2 — Authentication** — register/login/refresh/logout, protected routes, persistent sessions
 - [x] **Phase 3 — Application Shell** — real landing page, sidebar/topbar app shell, responsive drawer, light/dark theme system
 - [x] **Phase 4 — YouTube Integration** — URL import (video + playlist), real metadata via the Data API, embedded playback, a real library
-- [ ] Phase 5 — Learning Player
+- [x] **Phase 5 — Learning Player** — progress tracking, resume playback, auto/manual completion, keyboard shortcuts, a real Continue Learning section
 - [ ] Phase 6 — Notes & Bookmarks
 - [ ] Phase 7 — Playlists
 - [ ] Phase 8 — Library

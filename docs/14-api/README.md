@@ -149,9 +149,57 @@ The caller's saved videos, newest first.
 No filtering/sorting/search yet — Phase 8 adds query parameters here
 without changing the response shape.
 
+## Progress endpoints
+
+See [13-learning-features/progress-tracking](../13-learning-features/progress-tracking.md)
+for the full save/resume/completion flow.
+
+### `PUT /api/progress/:videoId`
+
+Saves (upserts) playback progress. `completed`, when present, overrides
+the automatic 90%-threshold computation — this is the "Mark complete" /
+"Mark incomplete" action; omit it for an ordinary autosave.
+
+| | |
+|---|---|
+| Auth required | Yes |
+| Body | `{ positionSeconds: number, durationSeconds: number, completed?: boolean }` |
+| 200 | `{ progress: WatchProgress }` |
+| 400 | Invalid video id |
+| 404 | No video with that id |
+
+### `GET /api/progress/:videoId`
+
+| | |
+|---|---|
+| Auth required | Yes |
+| 200 | `{ progress: WatchProgress \| null }` — `null` means never watched, not an error |
+
+### `GET /api/progress`
+
+The caller's in-progress (started, not completed) videos — "Continue
+Learning" — newest-watched first.
+
+| | |
+|---|---|
+| Auth required | Yes |
+| 200 | `{ items: Array<WatchProgress & { video: Video }> }` |
+
+### `WatchProgress` shape
+
+```ts
+{
+  positionSeconds: number;
+  durationSeconds: number;
+  percentage: number;    // 0–100
+  completed: boolean;
+  lastWatchedAt: string;  // ISO 8601
+}
+```
+
 ## Still to come
 
-`/api/playlists`, `/api/progress`, `/api/notes`, `/api/bookmarks`,
-`/api/search`, `/api/stats` are designed (see
+`/api/playlists`, `/api/notes`, `/api/bookmarks`, `/api/search`,
+`/api/stats` are designed (see
 [ADR-003](../22-architecture/decisions/ADR-003-database-schema-design.md))
 but not yet implemented — documented here once each phase lands.

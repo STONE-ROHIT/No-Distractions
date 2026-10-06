@@ -10,6 +10,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // Reuses the jsdom/worker setup across files instead of spawning it
+    // fresh per file — still one isolated environment per test file (no
+    // shared module registry or global state between files), just
+    // without redoing the setup cost each time. Noticeable once the
+    // suite has enough files for that setup cost to add up.
+    pool: 'vmThreads',
     env: {
       // Not currently hit by any test (everything mocks api/auth), but
       // keeps a future test that exercises the real api/client.ts from

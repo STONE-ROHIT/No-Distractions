@@ -9,8 +9,10 @@ import type { User } from './types/user';
 
 vi.mock('./api/auth');
 vi.mock('./api/library');
+vi.mock('./api/progress');
 const { fetchCurrentUser } = await import('./api/auth');
 const { fetchLibraryRequest } = await import('./api/library');
+const { fetchContinueLearningRequest } = await import('./api/progress');
 
 const fakeUser: User = {
   id: '507f1f77bcf86cd799439011',
@@ -44,6 +46,7 @@ beforeEach(() => {
   // are about library content, so an empty, deterministic default means
   // every test gets a settled query instead of an unmocked real request.
   vi.mocked(fetchLibraryRequest).mockResolvedValue([]);
+  vi.mocked(fetchContinueLearningRequest).mockResolvedValue([]);
 });
 
 describe('public routing', () => {

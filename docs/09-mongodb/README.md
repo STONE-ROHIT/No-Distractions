@@ -138,12 +138,35 @@ wrinkle it introduces (a populated field's static type doesn't
 automatically change from `ObjectId` to the full document; see that
 file's repository and `services/library.service.ts`'s cast).
 
+### WatchProgress
+
+```ts
+{
+  user: ObjectId,          // ref: 'User', indexed
+  video: ObjectId,         // ref: 'Video'
+  positionSeconds: number,
+  durationSeconds: number, // the PLAYER's reported duration at save time, not Video.durationSeconds
+  percentage: number,      // 0–100, computed server-side
+  completed: boolean,      // auto (>=90%) unless explicitly overridden
+  lastWatchedAt: Date,
+}
+```
+
+Unique on `(user, video)` — "save progress" is always an upsert. See
+[13-learning-features/progress-tracking](../13-learning-features/progress-tracking.md)
+for the full save/resume flow and exactly how `percentage` and
+`completed` get computed.
+
+Query pattern worth knowing: `findInProgressForUser` (the entire
+"Continue Learning" feature) is `{ completed: false, percentage: { $gt: 0
+} }`, sorted by `lastWatchedAt` descending — no separate aggregation or
+denormalized counter needed.
+
 ## Still to come
 
-Field-level schemas for `Playlist`, `WatchProgress`, `Note`, and
-`Bookmark` are documented here once their phase implements them (7, 5, 6,
-6 respectively) — the full target shape for all eight collections is
-already in
+Field-level schemas for `Playlist`, `Note`, and `Bookmark` are documented
+here once their phase implements them (7, 6, 6 respectively) — the full
+target shape for all eight collections is already in
 [ADR-003](../22-architecture/decisions/ADR-003-database-schema-design.md),
 but this page only documents models that actually exist in the code right
 now.

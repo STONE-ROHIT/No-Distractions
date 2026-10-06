@@ -8,6 +8,11 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
+    // NOT pool: 'vmThreads' here, unlike the client config — it breaks
+    // every test file in this suite using top-level `await import(...)`
+    // (which is most of them, for the repository-mocking pattern) with a
+    // SyntaxError. Tried as the same perf improvement the client got;
+    // reverted once it demonstrably didn't work for this workspace.
     env: {
       NODE_ENV: 'test',
       PORT: '5001',

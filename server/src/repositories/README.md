@@ -9,3 +9,7 @@ only touch this folder.
 takes the YouTube API's own response shape and does the
 API-shape-to-schema-shape mapping in one place, so nothing downstream
 touches raw YouTube API fields.
+
+`watchProgress.repository.ts`'s `findInProgressForUser` is the entire
+query behind "Continue Learning" — `completed: false, percentage: { $gt:
+0 }`, newest first.

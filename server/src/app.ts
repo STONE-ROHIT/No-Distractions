@@ -8,6 +8,7 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.routes.js';
 import { healthRouter } from './routes/health.routes.js';
 import { libraryRouter } from './routes/library.routes.js';
+import { progressRouter } from './routes/progress.routes.js';
 import { usersRouter } from './routes/users.routes.js';
 import { videosRouter } from './routes/videos.routes.js';
 import { logger } from './utils/logger.js';
@@ -41,6 +42,7 @@ export function createApp(): Express {
   app.use('/api/users', usersRouter);
   app.use('/api/videos', videosRouter);
   app.use('/api/library', libraryRouter);
+  app.use('/api/progress', progressRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

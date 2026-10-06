@@ -1,23 +1,52 @@
+import { usePlayerKeyboardShortcuts } from '../hooks/usePlayerKeyboardShortcuts';
+import { useYoutubePlayer } from '../hooks/useYoutubePlayer';
+
 interface VideoPlayerProps {
   youtubeVideoId: string;
   title: string;
   embeddable: boolean;
+  /** Where to resume — read once, at mount. See useYoutubePlayer's option of the same name. */
+  startSeconds?: number;
+  onProgress?: (currentTimeSeconds: number, durationSeconds: number) => void;
+  onEnded?: (durationSeconds: number) => void;
 }
 
 /**
  * Plays through YouTube's own embedded player on the privacy-enhanced
- * youtube-nocookie.com domain (Google's own recommended embed host for
- * exactly this: no tracking cookie is set until the visitor actually
- * presses play) — see ADR-005 for the full reasoning, including what
- * `rel=0` does and doesn't do.
- *
- * Deliberately a plain iframe for Phase 4 — no JS control over playback
- * yet. Phase 5 replaces this with the IFrame Player JS API specifically
- * because progress tracking and keyboard shortcuts need to call methods
- * on the player (getCurrentTime, seekTo, ...), which a bare iframe can't
- * do.
+ * youtube-nocookie.com domain — see ADR-005. Upgraded from Phase 4's
+ * plain iframe to the full IFrame Player JS API (useYoutubePlayer) here
+ * in Phase 5 specifically because progress tracking and keyboard
+ * shortcuts both need to call methods on the player — getCurrentTime,
+ * seekTo — which a bare iframe can't do.
  */
-export function VideoPlayer({ youtubeVideoId, title, embeddable }: VideoPlayerProps) {
+export function VideoPlayer({
+  youtubeVideoId,
+  title,
+  embeddable,
+  startSeconds,
+  onProgress,
+  onEnded,
+}: VideoPlayerProps) {
+  // Destructured here rather than used as `player.hasError` /
+  // `player.containerRef` in JSX below — eslint's react-hooks/refs rule
+  // flags ANY property access in JSX on an object that also carries a
+  // ref (containerRef here), even an unrelated useState field like
+  // hasError. Destructuring at the call site reads identically and
+  // avoids the false positive.
+  const { containerRef, isReady, hasError, togglePlay, seekBy, toggleMute, requestFullscreen } =
+    useYoutubePlayer({
+      youtubeVideoId,
+      startSeconds,
+      onProgress,
+      onEnded,
+      enabled: embeddable,
+    });
+
+  usePlayerKeyboardShortcuts(
+    { togglePlay, seekBy, toggleMute, requestFullscreen },
+    embeddable && isReady,
+  );
+
   if (!embeddable) {
     return (
       <div className="flex aspect-video flex-col items-center justify-center gap-3 rounded-lg bg-wash p-6 text-center">
@@ -37,14 +66,37 @@ export function VideoPlayer({ youtubeVideoId, title, embeddable }: VideoPlayerPr
   }
 
   return (
-    <div className="aspect-video overflow-hidden rounded-lg bg-black">
-      <iframe
-        className="h-full w-full"
-        src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}?rel=0`}
-        title={title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
+    <div className="flex flex-col gap-2">
+      <div
+        role="region"
+        aria-label={`Video player: ${title}`}
+        className="relative aspect-video overflow-hidden rounded-lg bg-black"
+      >
+        {/* The IFrame API replaces this div's contents with its own
+            iframe once the player is created — see useYoutubePlayer. */}
+        <div ref={containerRef} className="h-full w-full" />
+
+        {hasError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-wash p-6 text-center">
+            <p className="text-sm text-ink-muted">This video couldn&apos;t be played.</p>
+            <a
+              href={`https://www.youtube.com/watch?v=${youtubeVideoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-ink underline underline-offset-2"
+            >
+              Try it on YouTube
+            </a>
+          </div>
+        )}
+      </div>
+      <p className="text-xs text-ink-muted">
+        <kbd className="rounded border border-rule px-1">Space</kbd> play/pause ·{' '}
+        <kbd className="rounded border border-rule px-1">←</kbd>/
+        <kbd className="rounded border border-rule px-1">→</kbd> seek ·{' '}
+        <kbd className="rounded border border-rule px-1">M</kbd> mute ·{' '}
+        <kbd className="rounded border border-rule px-1">F</kbd> fullscreen
+      </p>
     </div>
   );
 }

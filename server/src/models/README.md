@@ -16,3 +16,6 @@ validation, and indexes; queried only through the matching repository in
   player, not discovered by a broken embed.
 - `LibraryItem.ts` — "this video is in this user's library"; unique on
   `(user, video)`. See [ADR-003](../../../docs/22-architecture/decisions/ADR-003-database-schema-design.md).
+- `WatchProgress.ts` — one document per (user, video); `durationSeconds`
+  is a snapshot of what the *player* reported at save time, not
+  `Video.durationSeconds` — see docs/13-learning-features.
